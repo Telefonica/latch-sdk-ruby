@@ -14,7 +14,7 @@
 
 * Require "Latch". Keep in mind where the SDK is placed inside your folder structure.
 ```
-	irequire_relative '/latch/Latch'
+	require_relative '/latch/Latch'
 ```
 
 * Create a Latch object with the "Application ID" and "Secret" previously obtained.
