@@ -24,7 +24,7 @@
 
 * Call to Latch Server. Pairing will return an account id that you should store for future api calls
 ```
-     pairResponse = api.pair("PAIRING_CODE_HERE")
+     pairResponse = api.pair(PAIRING_CODE_HERE)
      statusResponse = api.status(ACCOUNT_ID_HERE)
      unpairResponse = api.unpair(ACCOUNT_ID_HERE)
 ```
