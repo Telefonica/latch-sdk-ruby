@@ -19,7 +19,7 @@
 
 * Create a Latch object with the "Application ID" and "Secret" previously obtained.
 ```
-	pi = Latch.new(appid, app_secret)
+	api = Latch.new(appid, app_secret)
 ```
 
 * Call to Latch Server. Pairing will return an account id that you should store for future api calls
