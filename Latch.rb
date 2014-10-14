@@ -167,17 +167,17 @@ class Latch
 
 	def lock(accountId, operationId=nil)
 		if (operationId  == nil)
-			http_get_proxy(API_LOCK_URL + '/' + accountId)
+			http_post_proxy(API_LOCK_URL + '/' + accountId, {})
 		else
-			http_get_proxy(API_LOCK_URL + '/' + accountId + '/op/' + operationId)
+			http_post_proxy(API_LOCK_URL + '/' + accountId + '/op/' + operationId, {})
 	      end
 	end
 
 	def unlock(accountId, operationId=nil)
 		if (operationId  == nil)
-			http_get_proxy(API_UNLOCK_URL + '/' + accountId)
+			http_post_proxy(API_UNLOCK_URL + '/' + accountId, {})
 		else
-			http_get_proxy(API_UNLOCK_URL + '/' + accountId + '/op/' + operationId)
+			http_post_proxy(API_UNLOCK_URL + '/' + accountId + '/op/' + operationId, {})
 	      end
 	end
 
@@ -200,6 +200,10 @@ class Latch
 
 	def deleteOperation(operationId)
 		http_delete_proxy(API_OPERATIONS_URL + '/' + operationId)
+	end
+
+	def getOperations()
+		http_get_proxy(API_OPERATIONS_URL)
 	end
 
 	# @param $data the string to sign
