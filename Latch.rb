@@ -202,8 +202,11 @@ class Latch
 		http_delete_proxy(API_OPERATIONS_URL + '/' + operationId)
 	end
 
-	def getOperations()
-		http_get_proxy(API_OPERATIONS_URL)
+	def getOperations(operationId)
+		if (operationId == null)
+			http_get_proxy(API_OPERATIONS_URL)
+		else
+			http_get_proxy(API_OPERATIONS_URL + '/' + operationId)
 	end
 
 	# @param $data the string to sign
