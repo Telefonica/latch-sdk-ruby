@@ -206,7 +206,7 @@ class Latch
 		if (operationId == null)
 			http_get_proxy(API_OPERATIONS_URL)
 		else
-			http_get_proxy(API_OPERATIONS_URL + '/' + operationIdc)
+			http_get_proxy(API_OPERATIONS_URL + '/' + operationId)
 		end
 	end
 
