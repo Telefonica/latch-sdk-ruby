@@ -206,7 +206,8 @@ class Latch
 		if (operationId == null)
 			http_get_proxy(API_OPERATIONS_URL)
 		else
-			http_get_proxy(API_OPERATIONS_URL + '/' + operationId)
+			http_get_proxy(API_OPERATIONS_URL + '/' + operationIdc)
+		end
 	end
 
 	# @param $data the string to sign
