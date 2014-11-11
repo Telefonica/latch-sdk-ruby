@@ -26,11 +26,16 @@ class Latch
 
       attr_accessor  :api_host
 	API_HOST = "https://latch.elevenpaths.com"
-	API_VERSION = "0.6"
-	API_CHECK_STATUS_URL = "/api/0.6/status"
-	API_PAIR_URL = "/api/0.6/pair"
-	API_PAIR_WITH_ID_URL = "/api/0.6/pairWithId"
-	API_UNPAIR_URL =  "/api/0.6/unpair"
+	API_VERSION = "0.9"
+	API_CHECK_STATUS_URL = "/api/"+API_VERSION+"/status"
+	API_PAIR_URL = "/api/"+API_VERSION+"/pair"
+	API_PAIR_WITH_ID_URL = "/api/"+API_VERSION+"/pairWithId"
+	API_UNPAIR_URL =  "/api/"+API_VERSION+"/unpair"
+	API_LOCK_URL =  "/api/"+API_VERSION+"/lock"
+	API_UNLOCK_URL =  "/api/"+API_VERSION+"/unlock"
+	API_HISTORY_URL =  "/api/"+API_VERSION+"/history"
+	API_OPERATIONS_URL =  "/api/"+API_VERSION+"/operation"
+
 
 	AUTHORIZATION_HEADER_NAME = "Authorization"
 	DATE_HEADER_NAME = "X-11Paths-Date"
@@ -90,18 +95,26 @@ class Latch
       @api_host = API_HOST
     end
 
-
-    def http_get(url, headers)
+    def http(method, url, headers, params=nil)
     	     uri = URI.parse(url)
-		http = Net::HTTP.new(uri.host, uri.port)
+	     http = Net::HTTP.new(uri.host, uri.port)
 
-           if (uri.default_port == 443)
+            if (uri.default_port == 443)
 		    http.use_ssl = true
 		    http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-           end
+            end
 
-
-		request = Net::HTTP::Get.new(uri.request_uri)
+            if(method == "GET")
+			request = Net::HTTP::Get.new(uri.request_uri)
+		elsif (method == 'POST')
+			request = Net::HTTP::Post.new(uri.request_uri)
+			request.set_form_data(params)
+	      elsif (method == "PUT")
+	      	request = Net::HTTP::Put.new(uri.request_uri)
+			request.set_form_data(params)
+	      elsif (method == "DELETE")
+	      	request = Net::HTTP::Delete.new(uri.request_uri)
+	      end
 
 		headers.map do |key,value|
 			request[key] = value
@@ -113,9 +126,20 @@ class Latch
 
 
 	def http_get_proxy(url)
-		LatchResponse.new(http_get(api_host + url, authenticationHeaders('GET', url, nil)))
+		LatchResponse.new(http("GET", api_host + url, authenticationHeaders('GET', url, nil)))
 	end
 
+	def http_post_proxy(url, params)
+		LatchResponse.new(http("POST", api_host + url, authenticationHeaders('POST', url, nil, nil, params), params))
+	end
+
+	def http_put_proxy(url, params)
+		LatchResponse.new(http("PUT", api_host + url, authenticationHeaders('PUT', url, nil, nil, params), params))
+	end
+
+	def http_delete_proxy(url)
+		LatchResponse.new(http("DELETE", api_host + url, authenticationHeaders('DELETE', url, nil)))
+	end
 
 	def pairWithId(accountId)
 		http_get_proxy(API_PAIR_WITH_ID_URL + '/' + accountId)
@@ -133,7 +157,7 @@ class Latch
 
 
 	def operationStatus(accountId, operationId)
-		http_get_proxy(API_CHECK_STATUS_URL + "/" + accountId + '/' + operationId)
+		http_get_proxy(API_CHECK_STATUS_URL + "/" + accountId + '/op/' + operationId)
 	end
 
 
@@ -141,7 +165,50 @@ class Latch
 		http_get_proxy(API_UNPAIR_URL + '/' + accountId)
 	end
 
+	def lock(accountId, operationId=nil)
+		if (operationId  == nil)
+			http_post_proxy(API_LOCK_URL + '/' + accountId, {})
+		else
+			http_post_proxy(API_LOCK_URL + '/' + accountId + '/op/' + operationId, {})
+	      end
+	end
 
+	def unlock(accountId, operationId=nil)
+		if (operationId  == nil)
+			http_post_proxy(API_UNLOCK_URL + '/' + accountId, {})
+		else
+			http_post_proxy(API_UNLOCK_URL + '/' + accountId + '/op/' + operationId, {})
+	      end
+	end
+
+	def history (accountId, from='0', to=nil)
+		if (to == nil)
+			to = Time.now.to_i*1000
+		end
+		http_get_proxy(API_HISTORY_URL + '/' + accountId + '/' + from + '/' + to.to_s)
+	end
+
+	def createOperation(parentId, name, twoFactor, lockOnRequest)
+		params = { 'parentId' => parentId, 'name' => name, 'two_factor'=>twoFactor, 'lock_on_request'=>lockOnRequest}
+		http_put_proxy(API_OPERATIONS_URL, params)
+	end
+
+	def updateOperation(operationId, name, twoFactor, lockOnRequest)
+		params = { 'name' => name, 'two_factor'=>twoFactor, 'lock_on_request'=>lockOnRequest}
+		http_post_proxy(API_OPERATIONS_URL + '/' + operationId, params)
+	end
+
+	def deleteOperation(operationId)
+		http_delete_proxy(API_OPERATIONS_URL + '/' + operationId)
+	end
+
+	def getOperations(operationId=nil)
+		if (operationId == nil)
+			http_get_proxy(API_OPERATIONS_URL)
+		else
+			http_get_proxy(API_OPERATIONS_URL + '/' + operationId)
+		end
+	end
 
 	# @param $data the string to sign
 	# @return string base64 encoding of the HMAC-SHA1 hash of the data parameter using {@code secretKey} as cipher key.
@@ -156,7 +223,7 @@ class Latch
 	# @param $xHeaders HTTP headers specific to the 11-paths API. null if not needed.
 	# @param $utc the Universal Coordinated Time for the Date HTTP header
 	# @return array a map with the Authorization and Date headers needed to sign a Latch API request
-	def authenticationHeaders(httpMethod, queryString, xHeaders=nil, utc=nil)
+	def authenticationHeaders(httpMethod, queryString, xHeaders=nil, utc=nil, params=nil)
 		if (utc == nil)
 			utc = getCurrentUTC
 		end
@@ -165,6 +232,13 @@ class Latch
 						utc.to_s + "\n" +
 						getSerializedHeaders(xHeaders) + "\n" +
 						queryString.strip
+
+		if (params != nil && params.size > 0)
+			serializedParams = getSerializedParams(params)
+			if (serializedParams != nil && serializedParams.size > 0)
+				stringToSign = stringToSign.strip + "\n" + serializedParams
+			end
+		end
 
 		authorizationHeader = AUTHORIZATION_METHOD +
 							   AUTHORIZATION_HEADER_FIELD_SEPARATOR +
@@ -203,6 +277,20 @@ class Latch
 			end
 			substitute = 'utf-8'
 			return serializedHeaders.gsub(/^[#{substitute}]+|[#{substitute}]+$/, '')
+		else
+			return ""
+		end
+	end
+
+	def getSerializedParams(parameters)
+		if (parameters != nil)
+			serializedParams = ''
+
+			parameters.sort.map do |key,value|
+				serializedParams += key + "=" + value + '&'
+			end
+			substitute = '&'
+			return serializedParams.gsub(/^[#{substitute}]+|[#{substitute}]+$/, '')
 		else
 			return ""
 		end
