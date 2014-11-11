@@ -202,8 +202,8 @@ class Latch
 		http_delete_proxy(API_OPERATIONS_URL + '/' + operationId)
 	end
 
-	def getOperations(operationId)
-		if (operationId == null)
+	def getOperations(operationId=nil)
+		if (operationId == nil)
 			http_get_proxy(API_OPERATIONS_URL)
 		else
 			http_get_proxy(API_OPERATIONS_URL + '/' + operationId)
