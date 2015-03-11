@@ -36,13 +36,27 @@ class LatchApp < LatchAuth
   end
 
 
-  def status(account_id)
-    http_get_proxy(API_CHECK_STATUS_URL + '/' + account_id)
+  def status(account_id, silent = false, nootp = false)
+    url = API_CHECK_STATUS_URL + '/' + account_id
+    if nootp
+      url += '/nootp'
+    end
+    if silent
+      url += '/silent'
+    end
+    http_get_proxy(url)
   end
 
 
-  def operationStatus(account_id, operation_id)
-    http_get_proxy(API_CHECK_STATUS_URL + '/' + account_id + '/op/' + operation_id)
+  def operationStatus(account_id, operation_id, silent = false, nootp = false)
+    url = API_CHECK_STATUS_URL + '/' + account_id + '/op/' + operation_id
+    if nootp
+      url += '/nootp'
+    end
+    if silent
+      url += '/silent'
+    end
+    http_get_proxy(url)
   end
 
 
