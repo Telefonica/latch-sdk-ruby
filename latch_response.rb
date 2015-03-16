@@ -18,7 +18,7 @@
 
 require 'rubygems'
 require 'json'
-require_relative 'Error'
+require_relative 'error'
 
 
 # This class models a response from any of the endpoints in the Latch API.
