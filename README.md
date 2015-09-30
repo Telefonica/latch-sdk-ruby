@@ -14,7 +14,7 @@
 
 * Require "Latch". Keep in mind that you should install the ruby gem to your local rubygems directory before.
 ```
-        require 'rubygems'
+	require 'rubygems'
 	require 'latch'
 ```
 
