@@ -20,7 +20,8 @@ require 'base64'
 require 'cgi'
 require 'openssl'
 require 'net/http'
-require_relative 'LatchResponse'
+require 'net/https'
+require File.join(File.dirname(__FILE__), 'LatchResponse')
 
 class Latch
 
@@ -298,6 +299,7 @@ class Latch
 
 	# @return a string representation of the current time in UTC to be used in a Date HTTP Header
 	def getCurrentUTC
-		Time.now.utc
+		t = Time.now.utc
+		t.strftime("%Y-%m-%d %H:%M:%S")
 	end
 end

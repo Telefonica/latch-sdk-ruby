@@ -18,7 +18,7 @@
 
 require 'rubygems'
 require 'json'
-require_relative 'Error'
+require File.join(File.dirname(__FILE__), 'LatchError')
 
 
 # This class models a response from any of the endpoints in the Latch API.
@@ -41,7 +41,7 @@ class LatchResponse
 			end
 
 			if (json.has_key?("error"))
-				@error = Error.new(json["error"])
+				@error = LatchError.new(json["error"])
 			end
 		end
     end

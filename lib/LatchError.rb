@@ -18,7 +18,7 @@
 require 'rubygems'
 require 'json'
 
-class Error
+class LatchError
 
 	attr_reader :code
 	attr_reader :message
