@@ -1,9 +1,9 @@
-### LATCH RUBY SDK ###
+### LATCH RUBY SDK FOR 1.8.7###
 
 
 #### PREREQUISITES ####
 
-* Ruby 1.9.3 or above.
+* Ruby 1.8.7
 
 * Read API documentation (https://latch.elevenpaths.com/www/developers/doc_api).
 
@@ -12,9 +12,10 @@
 
 #### USING THE SDK IN RUBY ####
 
-* Require "Latch". Keep in mind where the SDK is placed inside your folder structure.
+* Require "Latch". Keep in mind that you should install the ruby gem to your local rubygems directory before.
 ```
-	require '/latch-sdk'
+        require 'rubygems'
+	require 'latch'
 ```
 
 * Create a Latch object with the "Application ID" and "Secret" previously obtained.
