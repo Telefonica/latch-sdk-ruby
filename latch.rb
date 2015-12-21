@@ -28,5 +28,4 @@ class Latch < LatchApp
   def initialize(app_id, secret_key)
     super(app_id, secret_key)
   end
-
 end

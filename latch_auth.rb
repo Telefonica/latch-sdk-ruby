@@ -25,7 +25,7 @@ class LatchAuth
 
   attr_accessor  :api_host
   API_HOST = 'https://latch.elevenpaths.com'
-  API_VERSION = '1.0'
+  API_VERSION = '1.1'
 
   # Application API
   API_CHECK_STATUS_URL = '/api/' + API_VERSION + '/status'
@@ -36,6 +36,7 @@ class LatchAuth
   API_UNLOCK_URL =  '/api/' + API_VERSION + '/unlock'
   API_HISTORY_URL =  '/api/' + API_VERSION + '/history'
   API_OPERATIONS_URL =  '/api/' + API_VERSION + '/operation'
+  API_INSTANCE_URL = '/api/' + API_VERSION + '/instance'
 
   # User API
   API_APPLICATION_URL = '/api/' + API_VERSION + '/application'
@@ -58,13 +59,14 @@ class LatchAuth
   # @param $header The HTTP header value from which to extract the part
   # @return string the specified part from the header or an empty string if not existent
   def getPartFromHeader(part, header)
+    result = ''
     if header.empty?
       parts = header.split(AUTHORIZATION_HEADER_FIELD_SEPARATOR)
       if parts.length > part
-        return parts[part]
+        result = parts[part]
       end
     end
-    return ""
+    result
   end
 
   # @param $authorization_header Authorization HTTP Header
@@ -217,17 +219,24 @@ class LatchAuth
   end
 
   def getSerializedParams(parameters)
-    if parameters != nil
+    result = ''
+    unless parameters.nil?
       serialized_params = ''
-
       parameters.sort.map do |key,value|
-        serialized_params += key + '=' + CGI::escape(value) + '&'
+        if value.kind_of?(Array)
+          parameters[key].sort.map do |value2|
+            if value2.kind_of?(String)
+              serialized_params += key + '=' + value2 + '&'
+            end
+          end
+        else
+          serialized_params += key + '=' + CGI::escape(value) + '&'
+        end
       end
       substitute = '&'
-      return serialized_params.gsub(/^[#{substitute}]+|[#{substitute}]+$/, '')
-    else
-      return ''
+      result = serialized_params.gsub(/^[#{substitute}]+|[#{substitute}]+$/, '')
     end
+    return result
   end
 
   # @return a string representation of the current time in UTC to be used in a Date HTTP Header
