@@ -186,7 +186,7 @@ class LatchAuth
     headers = {}
     headers[AUTHORIZATION_HEADER_NAME] = authorization_header
     headers[DATE_HEADER_NAME] = utc
-    return headers
+    headers
   end
 
 
@@ -196,14 +196,13 @@ class LatchAuth
   # @return a String with the serialized headers, an empty string if no headers are passed, or null if there's a problem
   # such as non 11paths specific headers
   def getSerializedHeaders(x_headers)
+    result = ''
     if x_headers != nil
       headers = x_headers.inject({}) do |x_headers, keys|
         hash[keys[0].downcase] = keys[1]
         hash
       end
-
       serialized_headers = ''
-
       headers.sort.map do |key,value|
         if key.downcase == X_11PATHS_HEADER_PREFIX.downcase
           puts 'Error serializing headers. Only specific ' + X_11PATHS_HEADER_PREFIX + ' headers need to be singed'
@@ -212,15 +211,15 @@ class LatchAuth
         serialized_headers += key + X_11PATHS_HEADER_SEPARATOR + value + ' '
       end
       substitute = 'utf-8'
-      return serialized_headers.gsub(/^[#{substitute}]+|[#{substitute}]+$/, '')
-    else
-      return ''
+      result = serialized_headers.gsub(/^[#{substitute}]+|[#{substitute}]+$/, '')
     end
+    result
   end
 
   def getSerializedParams(parameters)
     result = ''
-    unless parameters.nil?
+    if parameters != nil && parameters.size > 0
+    #unless parameters.nil?
       serialized_params = ''
       parameters.sort.map do |key,value|
         if value.kind_of?(Array)
@@ -236,7 +235,7 @@ class LatchAuth
       substitute = '&'
       result = serialized_params.gsub(/^[#{substitute}]+|[#{substitute}]+$/, '')
     end
-    return result
+    result
   end
 
   # @return a string representation of the current time in UTC to be used in a Date HTTP Header

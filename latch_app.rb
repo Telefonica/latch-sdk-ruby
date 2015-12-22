@@ -38,10 +38,10 @@ class LatchApp < LatchAuth
 
   def status(account_id, operation_id = nil, instance_id = nil, silent = false, nootp = false)
     url = API_CHECK_STATUS_URL + '/' + account_id
-    unless operation_id.nil?
+    if operation_id != nil && operation_id.length > 0
       url += '/op/' + operation_id
     end
-    unless instance_id.nil?
+    if instance_id != nil && instance_id.length > 0
       url += '/i/' + instance_id
     end
     if nootp
@@ -56,10 +56,10 @@ class LatchApp < LatchAuth
   def add_instance(account_id, operation_id = nil, instance_name = nil)
     arr = Hash.new {|h,k| h[k] = []}
     url = API_INSTANCE_URL + '/' + account_id
-    unless operation_id.nil?
+    if operation_id != nil && operation_id.length > 0
       url += '/op/' + operation_id
     end
-    unless instance_name.nil?
+    if instance_name != nil && instance_name.length > 0
       if instance_name.kind_of?(Array)
         instance_name.each do |value|
           arr['instances'] += [value]
@@ -73,10 +73,10 @@ class LatchApp < LatchAuth
 
   def remove_instance(account_id, operation_id = nil, instance_name = nil)
     url = API_INSTANCE_URL + '/' + account_id
-    unless operation_id.nil?
+    if operation_id != nil && operation_id.length > 0
       url += '/op/' + operation_id
     end
-    unless instance_name.nil?
+    if instance_name != nil && instance_name.length > 0
       url += '/i/' + instance_name
     end
     http_delete_proxy(url)
@@ -100,10 +100,10 @@ class LatchApp < LatchAuth
 
   def lock(account_id, operation_id = nil, instance = nil)
     url = API_LOCK_URL + '/' + account_id
-    unless operation_id.nil?
+    if operation_id != nil && operation_id.length > 0
       url += '/op/' + operation_id
     end
-    unless instance.nil?
+    if instance != nil && instance.length > 0
       url += '/i/' + instance
     end
     http_post_proxy(url, {})
@@ -111,10 +111,10 @@ class LatchApp < LatchAuth
 
   def unlock(account_id, operation_id = nil, instance = nil)
     url = API_UNLOCK_URL + '/' + account_id
-    unless operation_id.nil?
+    if operation_id != nil && operation_id.length > 0
       url += '/op/' + operation_id
     end
-    unless instance.nil?
+    if instance != nil && instance.length > 0
       url += '/i/' + instance
     end
     http_post_proxy(url, {})
