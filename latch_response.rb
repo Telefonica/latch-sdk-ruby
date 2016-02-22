@@ -35,13 +35,13 @@ class LatchResponse
 	def initialize(jsonString)
 		json = JSON.parse(jsonString)
 
-		if(json != nil)
-			if (json.has_key?("data"))
-				@data = json["data"]
+		if json != nil
+			if json.has_key?('data')
+				@data = json['data']
 			end
 
-			if (json.has_key?("error"))
-				@error = Error.new(json["error"])
+			if json.has_key?('error')
+				@error = Error.new(json['error'])
 			end
 		end
     end
@@ -50,12 +50,12 @@ class LatchResponse
 	def to_json
 		response = {}
 
-		if (@data != nil)
-			response["data"] = @data
+		if @data != nil
+			response['data'] = @data
 		end
 
-		if (@error != nil)
-			response["error"] = @error.to_json
+		if @error != nil
+			response['error'] = @error.to_json
 		end
 		response.to_json
 	end

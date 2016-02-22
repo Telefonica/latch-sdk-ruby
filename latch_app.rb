@@ -36,8 +36,14 @@ class LatchApp < LatchAuth
   end
 
 
-  def status(account_id, silent = false, nootp = false)
+  def status(account_id, operation_id = nil, instance_id = nil, silent = false, nootp = false)
     url = API_CHECK_STATUS_URL + '/' + account_id
+    if operation_id != nil && operation_id.length > 0
+      url += '/op/' + operation_id
+    end
+    if instance_id != nil && instance_id.length > 0
+      url += '/i/' + instance_id
+    end
     if nootp
       url += '/nootp'
     end
@@ -47,6 +53,34 @@ class LatchApp < LatchAuth
     http_get_proxy(url)
   end
 
+  def add_instance(account_id, operation_id = nil, instance_name = nil)
+    arr = Hash.new {|h,k| h[k] = []}
+    url = API_INSTANCE_URL + '/' + account_id
+    if operation_id != nil && operation_id.length > 0
+      url += '/op/' + operation_id
+    end
+    if instance_name != nil && instance_name.length > 0
+      if instance_name.kind_of?(Array)
+        instance_name.each do |value|
+          arr['instances'] += [value]
+        end
+      else
+        arr['instances'] << instance_name
+      end
+    end
+    http_post_proxy(url,arr)
+  end
+
+  def remove_instance(account_id, operation_id = nil, instance_name = nil)
+    url = API_INSTANCE_URL + '/' + account_id
+    if operation_id != nil && operation_id.length > 0
+      url += '/op/' + operation_id
+    end
+    if instance_name != nil && instance_name.length > 0
+      url += '/i/' + instance_name
+    end
+    http_delete_proxy(url)
+  end
 
   def operationStatus(account_id, operation_id, silent = false, nootp = false)
     url = API_CHECK_STATUS_URL + '/' + account_id + '/op/' + operation_id
@@ -64,20 +98,26 @@ class LatchApp < LatchAuth
     http_get_proxy(API_UNPAIR_URL + '/' + account_id)
   end
 
-  def lock(account_id, operation_id=nil)
-    if operation_id  == nil
-      http_post_proxy(API_LOCK_URL + '/' + account_id, {})
-    else
-      http_post_proxy(API_LOCK_URL + '/' + account_id + '/op/' + operation_id, {})
+  def lock(account_id, operation_id = nil, instance = nil)
+    url = API_LOCK_URL + '/' + account_id
+    if operation_id != nil && operation_id.length > 0
+      url += '/op/' + operation_id
     end
+    if instance != nil && instance.length > 0
+      url += '/i/' + instance
+    end
+    http_post_proxy(url, {})
   end
 
-  def unlock(account_id, operation_id=nil)
-    if operation_id  == nil
-      http_post_proxy(API_UNLOCK_URL + '/' + account_id, {})
-    else
-      http_post_proxy(API_UNLOCK_URL + '/' + account_id + '/op/' + operation_id, {})
+  def unlock(account_id, operation_id = nil, instance = nil)
+    url = API_UNLOCK_URL + '/' + account_id
+    if operation_id != nil && operation_id.length > 0
+      url += '/op/' + operation_id
     end
+    if instance != nil && instance.length > 0
+      url += '/i/' + instance
+    end
+    http_post_proxy(url, {})
   end
 
   def history (account_id, from='0', to=nil)

@@ -25,7 +25,7 @@ class LatchAuth
 
   attr_accessor  :api_host
   API_HOST = 'https://latch.elevenpaths.com'
-  API_VERSION = '1.0'
+  API_VERSION = '1.1'
 
   # Application API
   API_CHECK_STATUS_URL = '/api/' + API_VERSION + '/status'
@@ -36,6 +36,7 @@ class LatchAuth
   API_UNLOCK_URL =  '/api/' + API_VERSION + '/unlock'
   API_HISTORY_URL =  '/api/' + API_VERSION + '/history'
   API_OPERATIONS_URL =  '/api/' + API_VERSION + '/operation'
+  API_INSTANCE_URL = '/api/' + API_VERSION + '/instance'
 
   # User API
   API_APPLICATION_URL = '/api/' + API_VERSION + '/application'
@@ -58,13 +59,14 @@ class LatchAuth
   # @param $header The HTTP header value from which to extract the part
   # @return string the specified part from the header or an empty string if not existent
   def getPartFromHeader(part, header)
+    result = ''
     if header.empty?
       parts = header.split(AUTHORIZATION_HEADER_FIELD_SEPARATOR)
       if parts.length > part
-        return parts[part]
+        result = parts[part]
       end
     end
-    return ""
+    result
   end
 
   # @param $authorization_header Authorization HTTP Header
@@ -184,7 +186,7 @@ class LatchAuth
     headers = {}
     headers[AUTHORIZATION_HEADER_NAME] = authorization_header
     headers[DATE_HEADER_NAME] = utc
-    return headers
+    headers
   end
 
 
@@ -194,14 +196,13 @@ class LatchAuth
   # @return a String with the serialized headers, an empty string if no headers are passed, or null if there's a problem
   # such as non 11paths specific headers
   def getSerializedHeaders(x_headers)
+    result = ''
     if x_headers != nil
       headers = x_headers.inject({}) do |x_headers, keys|
         hash[keys[0].downcase] = keys[1]
         hash
       end
-
       serialized_headers = ''
-
       headers.sort.map do |key,value|
         if key.downcase == X_11PATHS_HEADER_PREFIX.downcase
           puts 'Error serializing headers. Only specific ' + X_11PATHS_HEADER_PREFIX + ' headers need to be singed'
@@ -210,24 +211,31 @@ class LatchAuth
         serialized_headers += key + X_11PATHS_HEADER_SEPARATOR + value + ' '
       end
       substitute = 'utf-8'
-      return serialized_headers.gsub(/^[#{substitute}]+|[#{substitute}]+$/, '')
-    else
-      return ''
+      result = serialized_headers.gsub(/^[#{substitute}]+|[#{substitute}]+$/, '')
     end
+    result
   end
 
   def getSerializedParams(parameters)
-    if parameters != nil
+    result = ''
+    if parameters != nil && parameters.size > 0
+    #unless parameters.nil?
       serialized_params = ''
-
       parameters.sort.map do |key,value|
-        serialized_params += key + '=' + CGI::escape(value) + '&'
+        if value.kind_of?(Array)
+          parameters[key].sort.map do |value2|
+            if value2.kind_of?(String)
+              serialized_params += key + '=' + value2 + '&'
+            end
+          end
+        else
+          serialized_params += key + '=' + CGI::escape(value) + '&'
+        end
       end
       substitute = '&'
-      return serialized_params.gsub(/^[#{substitute}]+|[#{substitute}]+$/, '')
-    else
-      return ''
+      result = serialized_params.gsub(/^[#{substitute}]+|[#{substitute}]+$/, '')
     end
+    result
   end
 
   # @return a string representation of the current time in UTC to be used in a Date HTTP Header
