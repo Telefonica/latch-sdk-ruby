@@ -68,7 +68,7 @@ class LatchApp < LatchAuth
         arr['instances'] << instance_name
       end
     end
-    http_post_proxy(url,arr)
+    http_put_proxy(url,arr)
   end
 
   def remove_instance(account_id, operation_id = nil, instance_name = nil)
