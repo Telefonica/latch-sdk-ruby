@@ -1,5 +1,5 @@
 #Latch Ruby SDK - Set of  reusable classes to  allow developers integrate Latch on their applications.
-#Copyright (C) 2013 Eleven Paths
+#Copyright (C) 2023 Telefonica Digital
 #
 #This library is free software; you can redistribute it and/or
 #modify it under the terms of the GNU Lesser General Public
@@ -19,7 +19,7 @@ require_relative 'latch_auth'
 
 class LatchApp < LatchAuth
 
-  # Create an instance of the class with the Application ID and secret obtained from Eleven Paths
+  # Create an instance of the class with the Application ID and secret obtained from Telefonica Digital
   # @param $appId
   # @param $secretKey
   def initialize(app_id, secret_key)
