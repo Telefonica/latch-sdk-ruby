@@ -25,23 +25,23 @@ class Error
 
 	# @param string json a Json representation of an error with "code" and "message" elements
 	def initialize(json)
-		if (json.is_a?(String))
-			json = JSON.Parse(json)
+		if json.is_a?(String)
+			json = JSON.parse(json)
 		end
 
-		if(json.has_key?("code")  && json.has_key?("message"))
-			@code = json["code"]
-			@message = json["message"]
+		if json.has_key?('code')  && json.has_key?('message')
+			@code = json['code']
+			@message = json['message']
 		else
-			puts "Error creating error object from string " + json
+			puts 'Error creating error object from string ' + json
 		end
     end
 
     # JSON representing the Error Object
     def to_json
 		error =  {}
-		error["code"] = @code
-		error["message"] = @message
+		error['code'] = @code
+		error['message'] = @message
 		error.to_json
 	end
 end
