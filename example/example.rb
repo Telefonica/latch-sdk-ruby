@@ -32,6 +32,6 @@ response = latch.pair("token")
 if response.error != nil
   puts "Error: #{response.error.message}"
 else
-  puts "Pairing realizado correctamente. Respuesta de Latch:"
+  puts "Pairing successful"
   puts response.data
 end
