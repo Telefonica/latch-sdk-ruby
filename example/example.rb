@@ -19,14 +19,14 @@ require_relative '../latch_app'
 require_relative '../latch_response'
 
 # We define the credentials of our app in Latch
-app_id = "YOUR_APP_ID"
-secret_key = "YOUR_SECRET_KEY"
+app_id = "APP_ID"
+secret_key = "SECRET_KEY"
 
 # Create a LatchApp instance with our credentials
 latch = LatchApp.new(app_id, secret_key)
 
 # We start the pairing process by entering the app token
-response = latch.pair("token") 
+response = latch.pair("pairingCode") 
 
 # Return the response
 if response.error != nil
@@ -34,4 +34,57 @@ if response.error != nil
 else
   puts "Pairing successful"
   puts response.data
+end
+
+
+responsePairId = latch.pairWithId("test@email.com") 
+
+# Return the response
+if responsePairId.error != nil
+  puts "Error: #{responsePairId.error.message}"
+else
+  puts "Pairing successful"
+  puts responsePairId.data
+end
+
+# We lock the account
+
+responseLock = latch.lock("accountId")
+
+# Return the response
+if responseLock.error != nil
+  puts "Error: #{responseLock.error.message}"
+else
+  puts "Lock successful"
+end
+
+# We unlock the account
+responseUnlock = latch.unlock("accountId")
+
+# Return the response
+if responseUnlock.error != nil
+  puts "Error: #{responseUnlock.error.message}"
+else
+  puts "Unlock successful"
+end
+
+
+# We check the status of the account
+responseStatus = latch.status("accountId")
+
+# Return the response
+if responseStatus.error != nil
+  puts "Error: #{responseStatus.error.message}"
+else
+  puts "Status: #{responseStatus.data}"
+end
+
+# We unpair the account
+responseUnpair = latch.unpair("accountId")
+
+# Return the response
+if responseUnpair.error != nil
+  puts "Error: #{responseUnpair.error.message}"
+else
+  puts "Unpair successful"
 end
