@@ -19,11 +19,11 @@ require_relative '../latch_app'
 require_relative '../latch_response'
 
 # We define the credentials of our app in Latch
-app_id = "D3UzHsBBKTEUQYGWRhfd"
-secret_key = "KpVDdBAXRYipMVE9DPx8kMVGDeWxmUujNu2azNbX"
+app_id = "APP_ID"
+secret_key = "SECRET_KEY"
 
-clientWallet = "0x22a8814abd23d77688e50e85d2d1c787e7929d24"
-clientSignature = "0xd0747edd16468de0f3886562ec461e9f92b8f91d3daee79ac799103f44e5c2e863c8cd1e97f2046b8a5c73527919cccc38cedb1f3448e7d5b46776f2f3cefca11c"
+clientWallet = "YOUR_WALLET_ADDRESS"
+clientSignature = "YOUR_SIGNATURE"
 
 # Create a LatchApp instance with our credentials
 latch = LatchApp.new(app_id, secret_key)
