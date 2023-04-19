@@ -26,7 +26,15 @@ class LatchApp < LatchAuth
     super(app_id, secret_key)
   end
 
-  def pairWithId(account_id, web3Wallet, web3Signature)
+  def pairWithId(account_id)
+    http_get_proxy(API_PAIR_WITH_ID_URL + '/' + account_id)
+  end
+
+  def pair(token)
+    http_get_proxy(API_PAIR_URL + '/' + token)
+  end
+
+  def pairWithIdWeb3(account_id, web3Wallet, web3Signature)
     if web3Wallet.nil? || web3Signature.nil?
       http_get_proxy(API_PAIR_WITH_ID_URL + '/' + account_id)
     else
@@ -35,7 +43,7 @@ class LatchApp < LatchAuth
     end
   end
 
-  def pair(token, web3Wallet, web3Signature)
+  def pairWithCodeWeb3(token, web3Wallet, web3Signature)
     if web3Wallet.nil? || web3Signature.nil?
       http_get_proxy(API_PAIR_URL + '/' + token)
     else
@@ -43,8 +51,6 @@ class LatchApp < LatchAuth
       http_post_proxy(API_PAIR_URL + '/' + token, params)
     end
   end
-  
-
 
   def status(account_id, operation_id = nil, instance_id = nil, silent = false, nootp = false)
     url = API_CHECK_STATUS_URL + '/' + account_id

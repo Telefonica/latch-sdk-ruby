@@ -29,10 +29,10 @@ clientSignature = "YOUR_SIGNATURE"
 latch = LatchApp.new(app_id, secret_key)
 
 # We start the pairing process by entering the app token
-responsePair = latch.pair("pairingCode", clientWallet, clientSignature) 
+responsePair = latch.pair("pairingCode")
 
 # Return the response
- if responsePair.error != nil
+if responsePair.error != nil
   puts "Error: #{responsePair.error.message}"
 else
   puts "Pairing successful"
@@ -40,8 +40,7 @@ else
 end 
 
 
-
-responsePairId = latch.pairWithId("test@email.com", clientWallet, clientSignature) 
+responsePairId = latch.pairWithId("test@email.com") 
 
 # Return the response
 if responsePairId.error != nil
@@ -51,9 +50,32 @@ else
   puts responsePairId.data
 end
 
+
+# USING THE SDK IN NODEJS FOR WEB3 SERVICES
+
+responsePairCodeWeb3 = latch.pairWithCodeWeb3("pairingCode", clientWallet, clientSignature)
+# Return the response
+ if responsePairCodeWeb3.error != nil
+  puts "Error: #{responsePairCodeWeb3.error.message}"
+else
+  puts "Pairing successful"
+  puts responsePairCodeWeb3.data
+end
+
+
+responsePairIdWeb3 = latch.pairWithIdWeb3("test@email.com", clientWallet, clientSignature) 
+
+# Return the response
+if responsePairIdWeb3.error != nil
+  puts "Error: #{responsePairIdWeb3.error.message}"
+else
+  puts "Pairing successful"
+  puts responsePairIdWeb3.data
+end
+
 # We lock the account
 
-responseLock = latch.lock("accountId")
+responseLockWeb3 = latch.lock("accountId")
 
 # Return the response
 if responseLock.error != nil
