@@ -33,7 +33,9 @@ class LatchResponse
 
 	# @param jsonString a json string received from one of the methods of the Latch API
 	def initialize(jsonString)
-		json = JSON.parse(jsonString)
+		if jsonString != nil
+			json = JSON.parse(jsonString)
+		end
 
 		if json != nil
 			if json.has_key?('data')
