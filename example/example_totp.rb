@@ -70,7 +70,7 @@ def check_status(api, account_id, element_id)
   when 'on'
     puts "Your latch is open and you are able to perform action"
   when 'off'
-    puts "Your latch is locked and you cannot be allowed to perform action"
+    puts "Your latch is locked and you are not allowed to perform action"
   else
     puts "Error processing the response"
     exit(1)
