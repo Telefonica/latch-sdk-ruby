@@ -24,7 +24,7 @@ require_relative 'latch_response'
 class LatchAuth
 
   attr_accessor  :api_host
-  API_HOST = 'https://latch.telefonica.com'
+  API_HOST = 'https://latch.tu.com'
   API_VERSION = '1.1'
 
   # Application API
