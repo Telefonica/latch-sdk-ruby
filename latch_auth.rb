@@ -25,7 +25,7 @@ class LatchAuth
 
   attr_accessor  :api_host
   API_HOST = 'https://latch.tu.com'
-  API_VERSION = '1.1'
+  API_VERSION = '3.0'
 
   # Application API
   API_CHECK_STATUS_URL = '/api/' + API_VERSION + '/status'
