@@ -37,6 +37,8 @@ class LatchAuth
   API_HISTORY_URL =  '/api/' + API_VERSION + '/history'
   API_OPERATIONS_URL =  '/api/' + API_VERSION + '/operation'
   API_INSTANCE_URL = '/api/' + API_VERSION + '/instance'
+  API_TOTP_URL= '/api/' + API_VERSION + '/totps';
+  API_CONTROL_STATUS_CHECK_URL = '/api/' + API_VERSION + '/control-status';
 
   # User API
   API_APPLICATION_URL = '/api/' + API_VERSION + '/application'

@@ -26,14 +26,43 @@ class LatchApp < LatchAuth
     super(app_id, secret_key)
   end
 
-  def pairWithId(account_id)
-    http_get_proxy(API_PAIR_WITH_ID_URL + '/' + account_id)
+  def pair(token, web3_wallet = nil, web3_signature = nil, common_name = nil)
+    data = {
+      'wallet' => CGI.escape(web3_wallet.to_s),
+      'signature' => CGI.escape(web3_signature.to_s),
+      'commonName' => CGI.escape(common_name.to_s)
+    }
+
+    # Filter empty or nil
+    data = data.reject { |_, v| v.nil? || v.empty? }
+  
+    if data.empty?
+      http_get_proxy(API_PAIR_URL + '/' + token)
+    else
+      http_post_proxy(API_PAIR_URL + '/' + token, data)
+    end
   end
 
-  def pair(token)
-    http_get_proxy(API_PAIR_URL + '/' + token)
+  def pairWithId(account_id, web3_wallet = nil, web3_signature = nil, common_name = nil)
+    data = {
+      'wallet' => CGI.escape(web3_wallet.to_s),
+      'signature' => CGI.escape(web3_signature.to_s),
+      'commonName' => CGI.escape(common_name.to_s)
+    }
+  
+    # Filtrar datos (eliminar valores nil o vacíos)
+    data = data.reject { |_, v| v.nil? || v.empty? }
+  
+    # Realizar la solicitud dependiendo de si 'data' está vacío
+    if data.empty?
+      http_get_proxy(API_PAIR_WITH_ID_URL + '/' + account_id)
+    else
+      http_post_proxy(API_PAIR_WITH_ID_URL + '/' + account_id, data)
+    end
   end
 
+  # Deprecated: Use 'pairWithId' instead of 'pairWithIdWeb3'
+  # This method will be removed in a future release.
   def pairWithIdWeb3(account_id, web3Wallet, web3Signature)
     if web3Wallet.nil? || web3Signature.nil?
       http_get_proxy(API_PAIR_WITH_ID_URL + '/' + account_id)
@@ -43,6 +72,8 @@ class LatchApp < LatchAuth
     end
   end
 
+  # Deprecated: Use 'pair' instead of 'pairWithCodeWeb3'
+  # This method will be removed in a future release.
   def pairWithCodeWeb3(token, web3Wallet, web3Signature)
     if web3Wallet.nil? || web3Signature.nil?
       http_get_proxy(API_PAIR_URL + '/' + token)
@@ -172,6 +203,34 @@ class LatchApp < LatchAuth
     else
       http_get_proxy(API_OPERATIONS_URL + '/' + operation_id)
     end
+  end
+
+  def create_totp(id, name)
+    data = {
+      'userId' => CGI.escape(id.to_s),
+      'commonName' => CGI.escape(name.to_s)
+    }
+    http_post_proxy(API_TOTP_URL, data)
+  end
+
+  def get_totp(totp_id)
+    http_get_proxy(API_TOTP_URL + '/' + totp_id)
+  end
+
+  # Validar un TOTP
+  def validate_totp(totp_id, code)
+    data = { 'code' => CGI.escape(code.to_s) }
+    http_post_proxy(API_TOTP_URL + '/' + totp_id + '/validate', data)
+  end
+
+  # Eliminar un TOTP
+  def delete_totp(totp_id)
+    http_delete_proxy(API_TOTP_URL + '/' + totp_id)
+  end
+
+  # Comprobar el estado del control
+  def check_control_status(control_id)
+    http_get_proxy(API_CONTROL_STATUS_CHECK_URL + '/' + control_id)
   end
 
 end
