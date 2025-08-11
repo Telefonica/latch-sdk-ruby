@@ -1,5 +1,5 @@
 #Latch Ruby SDK - Set of  reusable classes to  allow developers integrate Latch on their applications.
-#Copyright (C) 2023 Telefonica Digital
+#Copyright (C) 2024 Telefonica Innovación Digital
 #
 #This library is free software; you can redistribute it and/or
 #modify it under the terms of the GNU Lesser General Public
@@ -33,7 +33,9 @@ class LatchResponse
 
 	# @param jsonString a json string received from one of the methods of the Latch API
 	def initialize(jsonString)
-		json = JSON.parse(jsonString)
+		if jsonString != nil
+			json = JSON.parse(jsonString)
+		end
 
 		if json != nil
 			if json.has_key?('data')

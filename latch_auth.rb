@@ -1,5 +1,5 @@
 #Latch Ruby SDK - Set of  reusable classes to  allow developers integrate Latch on their applications.
-#Copyright (C) 2023 Telefonica Digital
+#Copyright (C) 2024 Telefonica Innovación Digital
 #
 #This library is free software; you can redistribute it and/or
 #modify it under the terms of the GNU Lesser General Public
@@ -24,8 +24,8 @@ require_relative 'latch_response'
 class LatchAuth
 
   attr_accessor  :api_host
-  API_HOST = 'https://latch.telefonica.com'
-  API_VERSION = '1.1'
+  API_HOST = 'https://latch.tu.com'
+  API_VERSION = '3.0'
 
   # Application API
   API_CHECK_STATUS_URL = '/api/' + API_VERSION + '/status'
@@ -37,6 +37,8 @@ class LatchAuth
   API_HISTORY_URL =  '/api/' + API_VERSION + '/history'
   API_OPERATIONS_URL =  '/api/' + API_VERSION + '/operation'
   API_INSTANCE_URL = '/api/' + API_VERSION + '/instance'
+  API_TOTP_URL= '/api/' + API_VERSION + '/totps';
+  API_CONTROL_STATUS_CHECK_URL = '/api/' + API_VERSION + '/control-status';
 
   # User API
   API_APPLICATION_URL = '/api/' + API_VERSION + '/application'
